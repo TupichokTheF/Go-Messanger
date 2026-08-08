@@ -7,25 +7,25 @@ type User struct {
 	UserPassword UserPassword
 }
 
-func CreateUser(userName_, userEmail_, userPassword_ string) (*User, error) {
-	userName, err := CreateUserName(userName_)
+func CreateUser(inputUserName, inputUserEmail, inputUserPassword string) (*User, error) {
+	userName, err := CreateUserName(inputUserName)
 	if err != nil {
 		return nil, err
 	}
 
-	userPass, err := CreatePassword(userPassword_)
+	userPass, err := CreatePassword(inputUserPassword)
 	if err != nil {
 		return nil, err
 	}
 
-	userEmail, err := CreateUserEmail(userEmail_)
+	userEmail, err := CreateUserEmail(inputUserEmail)
 	if err != nil {
 		return nil, err
 	}
 
-	return new(User{
+	return &User{
 		UserName:     userName,
 		UserPassword: userPass,
 		UserEmail:    userEmail,
-	}), nil
+	}, nil
 }

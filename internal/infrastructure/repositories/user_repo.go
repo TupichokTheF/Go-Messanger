@@ -12,6 +12,12 @@ type UserRepository struct {
 	*pgxpool.Pool
 }
 
+func CreateNewUserRepository(pool *pgxpool.Pool) (*UserRepository, error) {
+	return &UserRepository{
+		Pool: pool,
+	}, nil
+}
+
 func (userRepo *UserRepository) GetUserById(userId int) (*user.User, error) {
 	var u *user.User = new(user.User)
 	err := userRepo.Pool.QueryRow(context.TODO(),
@@ -25,13 +31,13 @@ func (userRepo *UserRepository) GetUserById(userId int) (*user.User, error) {
 	return u, nil
 }
 
-func (userRepo *UserRepository) AddUser(user_ *user.User) (int, error) {
+func (userRepo *UserRepository) AddUser(inputUser *user.User) (int, error) {
 	var id int
 	err := userRepo.Pool.QueryRow(context.TODO(),
 		`INSERT INTO users (username, email, password) 
 		VALUES ($1, $2, $3)
 		RETURNING user_id`,
-		user_.UserName, user_.UserEmail, user_.UserEmail).Scan(&id)
+		inputUser.UserName, inputUser.UserEmail, inputUser.UserEmail).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("Error while adding user: %v", err)
 	}
