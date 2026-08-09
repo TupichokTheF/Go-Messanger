@@ -19,7 +19,7 @@ func CreateNewUserService(userRepo user.UserRepoInterface) (*UserService, error)
 }
 
 func (userService *UserService) CreateNewUser(ctx context.Context, userCreateDTO dtos.UserCreateDTO) (*dtos.UserCreatedDTO, error) {
-	user, err := user.CreateUser(userCreateDTO.UserName, userCreateDTO.UserEmail, userCreateDTO.UserPassword)
+	user, err := user.New(userCreateDTO.UserName, userCreateDTO.UserEmail, userCreateDTO.UserPassword)
 	if err != nil {
 		return nil, &errors.IncorrectValue{BaseApplicationError: errors.BaseApplicationError{Err: err.Error()}}
 	}

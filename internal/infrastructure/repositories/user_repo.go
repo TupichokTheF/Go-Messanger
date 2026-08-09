@@ -19,25 +19,26 @@ func CreateNewUserRepository(pool *pgxpool.Pool) (*UserRepository, error) {
 }
 
 func (userRepo *UserRepository) GetUserById(userId int) (*user.User, error) {
-	var u *user.User = new(user.User)
+	var u *user.UserState = new(user.UserState)
 	err := userRepo.Pool.QueryRow(context.TODO(),
 		"SELECT * FROM users WHERE user_id = $1",
-		userId).Scan(&u.Id, &u.UserName, &u.UserEmail, &u.UserPassword)
+		userId).Scan(&u.ID, &u.UserName, &u.UserEmail, &u.UserPassword)
 
 	if err != nil {
 		return nil, fmt.Errorf("Oshibochka NE LOL")
 	}
 
-	return u, nil
+	return user.Reconstitute(*u), nil
 }
 
 func (userRepo *UserRepository) AddUser(inputUser *user.User) (int, error) {
 	var id int
+	userState := inputUser.State()
 	err := userRepo.Pool.QueryRow(context.TODO(),
 		`INSERT INTO users (username, email, password) 
 		VALUES ($1, $2, $3)
 		RETURNING user_id`,
-		inputUser.UserName, inputUser.UserEmail, inputUser.UserEmail).Scan(&id)
+		userState.UserName, userState.UserEmail, userState.UserPassword).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("Error while adding user: %v", err)
 	}

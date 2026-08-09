@@ -22,7 +22,7 @@ func start() {
 	}
 	defer db.CloseConnection()
 
-	testuser, _ := user.CreateUser("TestUser1", "msdad@mail.ru", "1A2w3e4r")
+	testuser, _ := user.New("TestUser1", "msdad@mail.ru", "1A2w3e4r")
 	testRepo := repositories.UserRepository{Pool: db.ConnPool}
 
 	userID, err := testRepo.AddUser(testuser)

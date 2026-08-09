@@ -1,13 +1,14 @@
 package user
 
+
 type User struct {
-	Id           int
-	UserName     UserName
-	UserEmail    UserEmail
-	UserPassword UserPassword
+	id           int
+	userName     UserName
+	userEmail    UserEmail
+	userPassword UserPassword
 }
 
-func CreateUser(inputUserName, inputUserEmail, inputUserPassword string) (*User, error) {
+func New(inputUserName, inputUserEmail, inputUserPassword string) (*User, error) {
 	userName, err := CreateUserName(inputUserName)
 	if err != nil {
 		return nil, err
@@ -24,8 +25,24 @@ func CreateUser(inputUserName, inputUserEmail, inputUserPassword string) (*User,
 	}
 
 	return &User{
-		UserName:     userName,
-		UserPassword: userPass,
-		UserEmail:    userEmail,
+		userName:     userName,
+		userPassword: userPass,
+		userEmail:    userEmail,
 	}, nil
+}
+
+func (u *User) Username() UserName {
+	return u.userName
+}
+
+func (u *User) Email() UserEmail {
+	return u.userEmail
+}
+
+func (u *User) Password() UserPassword {
+	return u.userPassword
+}
+
+func (u *User) ID() int {
+	return u.id
 }

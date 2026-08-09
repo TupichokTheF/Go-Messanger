@@ -6,33 +6,36 @@ import (
 	"unicode"
 )
 
-type (
-	UserName     string
-	UserPassword string
-	UserEmail    string
-)
+
+type UserName struct {value string}
 
 func CreateUserName(value string) (UserName, error) {
 	if len(value) < 4 {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Username is too short"}, value: value}
+		return UserName{}, &ValidationError{Field: "username", Reason: "Username is too short"}
 	} else if len(value) > 30 {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Username is too long"}, value: value}
+		return UserName{}, &ValidationError{Field: "username", Reason: "Username is too long"}
 	} else if strings.TrimSpace(value) == "" {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Empty username"}, value: value}
+		return UserName{}, &ValidationError{Field: "username", Reason: "Empty username"}
 	}
 
-	return UserName(value), nil
+	return UserName{value: value,}, nil
 }
+
+func (name UserName) String() string {
+	return name.value
+}
+
+type UserPassword struct {value string}
 
 func CreatePassword(value string) (UserPassword, error) {
 	if len(value) < 6 {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Password is too short"}}
+		return UserPassword{}, &ValidationError{Field: "password", Reason: "Password is too short"}
 	} else if len(value) > 30 {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Password is too long"}}
+		return UserPassword{}, &ValidationError{Field: "password", Reason: "Password is too long"}
 	} else if strings.ToLower(value) == value {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Password required upper symbol"}}
+		return UserPassword{}, &ValidationError{Field: "password", Reason: "Password required upper symbol"}
 	} else if strings.ToUpper(value) == value {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Password required lower symbol"}}
+		return UserPassword{}, &ValidationError{Field: "password", Reason: "Password required lower symbol"}
 	}
 	hasDigit := func() bool {
 		for _, r := range value {
@@ -43,21 +46,31 @@ func CreatePassword(value string) (UserPassword, error) {
 		return false
 	}
 	if !hasDigit() {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Password required digit"}}
+		return UserPassword{}, &ValidationError{Field: "password", Reason: "Password required digit"}
 	}
 
-	return UserPassword(value), nil
+	return UserPassword{value: value,}, nil
 }
+
+func (pass UserPassword) String() string {
+	return pass.value
+}
+
+type UserEmail struct {value string}
 
 func CreateUserEmail(value string) (UserEmail, error) {
 	if len(value) > 200 {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Email address is too long"}, value: value}
+		return UserEmail{}, &ValidationError{Field: "email", Reason: "Email address is too long"}
 	}
 
 	_, err := mail.ParseAddress(value)
 	if err != nil {
-		return "", &IncorrectValue{BaseError: BaseError{err: "Incorrect email address"}, value: value}
+		return UserEmail{}, &ValidationError{Field: "email", Reason: "Incorrect email address"}
 	}
 
-	return UserEmail(value), nil
+	return UserEmail{value: value,}, nil
+}
+
+func (email UserEmail) String() string {
+	return email.value
 }
