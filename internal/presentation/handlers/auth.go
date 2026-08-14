@@ -25,6 +25,7 @@ func (handler *AuthHander) CreateUser(w http.ResponseWriter, req *http.Request) 
 	var request schemas.CreateUserSchema
 	if err := json.NewDecoder(req.Body).Decode(&request); err != nil {
 		response.Error(w, http.StatusBadRequest, "Invalid request body")
+		return
 	}
 	defer req.Body.Close()
 
@@ -32,6 +33,7 @@ func (handler *AuthHander) CreateUser(w http.ResponseWriter, req *http.Request) 
 	if err != nil {
 		status, errorMessage := mappers.FromApplicationToApiError(err)
 		response.Error(w, status, errorMessage)
+		return
 	}
 
 	response.JSON(w, http.StatusCreated, result)

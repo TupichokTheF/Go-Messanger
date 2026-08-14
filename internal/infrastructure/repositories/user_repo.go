@@ -12,7 +12,7 @@ type UserRepository struct {
 	*pgxpool.Pool
 }
 
-func CreateNewUserRepository(pool *pgxpool.Pool) (*UserRepository, error) {
+func NewUserRepository(pool *pgxpool.Pool) (*UserRepository, error) {
 	return &UserRepository{
 		Pool: pool,
 	}, nil
@@ -25,7 +25,7 @@ func (userRepo *UserRepository) GetUserById(userId int) (*user.User, error) {
 		userId).Scan(&u.ID, &u.UserName, &u.UserEmail, &u.UserPassword)
 
 	if err != nil {
-		return nil, fmt.Errorf("Oshibochka NE LOL")
+		return nil, user.NotFoundError
 	}
 
 	return user.Reconstitute(*u), nil

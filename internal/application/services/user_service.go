@@ -2,17 +2,17 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"project/internal/application/dtos"
-	errors "project/internal/application/errors"
 	"project/internal/domain/user"
 )
 
 
 type UserService struct {
-	userRepo user.UserRepoInterface
+	userRepo user.Repository
 }
 
-func CreateNewUserService(userRepo user.UserRepoInterface) (*UserService, error) {
+func NewUserService(userRepo user.Repository) (*UserService, error) {
 	return &UserService{
 		userRepo: userRepo,
 	}, nil
@@ -21,12 +21,12 @@ func CreateNewUserService(userRepo user.UserRepoInterface) (*UserService, error)
 func (userService *UserService) CreateNewUser(ctx context.Context, userCreateDTO dtos.UserCreateDTO) (*dtos.UserCreatedDTO, error) {
 	user, err := user.New(userCreateDTO.UserName, userCreateDTO.UserEmail, userCreateDTO.UserPassword)
 	if err != nil {
-		return nil, &errors.IncorrectValue{BaseApplicationError: errors.BaseApplicationError{Err: err.Error()}}
+		return nil, fmt.Errorf("create user: %w", err)
 	}
 	
 	userId, err := userService.userRepo.AddUser(user)
 	if err != nil {
-		return nil, &errors.UserAlreadyExist{BaseApplicationError: errors.BaseApplicationError{Err: err.Error()}}
+		return nil, fmt.Errorf("create user: %w", err)
 	}
 
 	return new(dtos.UserCreatedDTO{

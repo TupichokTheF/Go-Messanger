@@ -1,12 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
+	"project/internal/application/services"
 	"project/internal/core"
-	"project/internal/domain/user"
 	"project/internal/infrastructure/database/postgres"
 	"project/internal/infrastructure/repositories"
+	"project/internal/presentation/handlers"
+	"project/internal/presentation/routers"
 )
 
 func main() {
@@ -22,14 +24,27 @@ func start() {
 	}
 	defer db.CloseConnection()
 
-	testuser, _ := user.New("TestUser1", "msdad@mail.ru", "1A2w3e4r")
-	testRepo := repositories.UserRepository{Pool: db.ConnPool}
-
-	userID, err := testRepo.AddUser(testuser)
+	userRepo, err := repositories.NewUserRepository(db.ConnPool)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err.Error())
 	}
 
-	fmt.Println(userID)
+	userService, err := services.NewUserService(userRepo)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	authHandler, err := handlers.NewAuthHandler(userService)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	routersOptions := []routers.Option{
+		routers.WithAuthRouter(*authHandler),
+	}
+
+	router := routers.GetRouter(routersOptions...)
+	if err := http.ListenAndServe(cfg.GetAddress(), router); err != nil {
+		log.Fatal(err.Error())
+	}
 }

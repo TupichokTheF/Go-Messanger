@@ -19,6 +19,10 @@ type HTTPConfig struct {
 	HTTPPort int    `env:"HTTP_PORT"`
 }
 
+func (conf *HTTPConfig) GetAddress() string {
+	return fmt.Sprintf("%s:%v", conf.HTTPHost, conf.HTTPPort)
+}
+
 type DataBaseConfig struct {
 	DBHost     string `env:"DB_HOST" env-required:"true"`
 	DBPort     int    `env:"DB_PORT" env-required:"true"`
