@@ -1,16 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"project/internal/application/services"
 	"project/internal/core"
 	"project/internal/infrastructure/database/postgres"
 	"project/internal/infrastructure/repositories"
+
+	//"project/internal/infrastructure/repositories"
 	"project/internal/presentation/handlers"
 	"project/internal/presentation/routers"
 )
 
+// @title    Go Messenger API
+// @version  1.0
+// @host     localhost:8080
+// @BasePath /api/v1
 func main() {
 	start()
 }
@@ -24,23 +31,19 @@ func start() {
 	}
 	defer db.CloseConnection()
 
-	userRepo, err := repositories.NewUserRepository(db.ConnPool)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	userRepo := repositories.NewUserRepository(db.ConnPool)
 
-	userService, err := services.NewUserService(userRepo)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	userService := services.NewUserService(userRepo)
 
-	authHandler, err := handlers.NewAuthHandler(userService)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	authHandler := handlers.NewAuthHandler(userService)
 
 	routersOptions := []routers.Option{
 		routers.WithAuthRouter(*authHandler),
+	}
+
+	if cfg.Swagger {
+		fmt.Println("URAAA")
+		routersOptions = append(routersOptions, routers.WithSwagger())
 	}
 
 	router := routers.GetRouter(routersOptions...)

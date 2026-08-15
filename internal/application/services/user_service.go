@@ -12,10 +12,10 @@ type UserService struct {
 	userRepo user.Repository
 }
 
-func NewUserService(userRepo user.Repository) (*UserService, error) {
+func NewUserService(userRepo user.Repository) *UserService {
 	return &UserService{
 		userRepo: userRepo,
-	}, nil
+	}
 }
 
 func (userService *UserService) CreateNewUser(ctx context.Context, userCreateDTO dtos.UserCreateDTO) (*dtos.UserCreatedDTO, error) {

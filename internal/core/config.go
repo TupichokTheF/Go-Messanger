@@ -12,6 +12,7 @@ type Config struct {
 	BasePath string `env:"BASE_PATH" env-required:"true"`
 	HTTPConfig
 	DataBaseConfig
+	LocalConfig
 }
 
 type HTTPConfig struct {
@@ -36,6 +37,10 @@ func (d *DataBaseConfig) GetURL() string {
 		d.DBUser, d.DBPassword, d.DBHost, d.DBPort, d.DBName)
 
 	return url
+}
+
+type LocalConfig struct {
+	Swagger bool `env:"SWAGGER" env-required:"true"`
 }
 
 func LoadConfig() *Config {

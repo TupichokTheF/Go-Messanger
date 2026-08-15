@@ -1,0 +1,54 @@
+basePath: /api/v1
+definitions:
+  project_internal_presentation_schemas.CreateUserSchema:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  project_internal_presentation_schemas.ErrorSchema:
+    properties:
+      error:
+        type: string
+    type: object
+  project_internal_presentation_schemas.UserCreatedSchema:
+    properties:
+      user_id:
+        example: 1
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Go Messenger API
+  version: "1.0"
+paths:
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/project_internal_presentation_schemas.CreateUserSchema'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/project_internal_presentation_schemas.UserCreatedSchema'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project_internal_presentation_schemas.ErrorSchema'
+      summary: Регистрация пользователя
+      tags:
+      - auth
+swagger: "2.0"

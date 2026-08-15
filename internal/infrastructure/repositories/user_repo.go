@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"project/internal/domain/user"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -12,10 +11,10 @@ type UserRepository struct {
 	*pgxpool.Pool
 }
 
-func NewUserRepository(pool *pgxpool.Pool) (*UserRepository, error) {
+func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
 	return &UserRepository{
 		Pool: pool,
-	}, nil
+	}
 }
 
 func (userRepo *UserRepository) GetUserById(userId int) (*user.User, error) {
@@ -40,7 +39,7 @@ func (userRepo *UserRepository) AddUser(inputUser *user.User) (int, error) {
 		RETURNING user_id`,
 		userState.UserName, userState.UserEmail, userState.UserPassword).Scan(&id)
 	if err != nil {
-		return 0, fmt.Errorf("Error while adding user: %v", err)
+		return 0, user.AlreadyExistError
 	}
 
 	return id, nil

@@ -13,3 +13,9 @@ func FromCreatedSchemaToDTO(schema *schemas.CreateUserSchema) *dtos.UserCreateDT
 		UserEmail: schema.Email,
 	}
 }
+
+func FromCreatedDTOToSchema(dto *dtos.UserCreatedDTO) *schemas.UserCreatedSchema {
+	return &schemas.UserCreatedSchema{
+		UserID: dto.UserId,
+	}
+}
