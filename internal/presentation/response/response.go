@@ -13,7 +13,7 @@ import (
 // - status, HTTP статус, с которым возвращается ответ
 // - payload, тело ответа, приходит ввиде любого тип данных
 func JSON(w http.ResponseWriter, status int, payload any) {
-	w.Header().Set("Content-Type", "application/JSON")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 
 	buf, _ := json.Marshal(payload)

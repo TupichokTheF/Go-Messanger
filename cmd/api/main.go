@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"project/internal/application/services"
 	"project/internal/core"
 	"project/internal/infrastructure/database/postgres"
 	"project/internal/infrastructure/repositories"
-
-	//"project/internal/infrastructure/repositories"
 	"project/internal/presentation/handlers"
 	"project/internal/presentation/routers"
 )
@@ -38,11 +35,10 @@ func start() {
 	authHandler := handlers.NewAuthHandler(userService)
 
 	routersOptions := []routers.Option{
-		routers.WithAuthRouter(*authHandler),
+		routers.WithAuthRouter(authHandler),
 	}
 
 	if cfg.Swagger {
-		fmt.Println("URAAA")
 		routersOptions = append(routersOptions, routers.WithSwagger())
 	}
 

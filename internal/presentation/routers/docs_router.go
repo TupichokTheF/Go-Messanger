@@ -9,6 +9,6 @@ import (
 
 func WithSwagger() Option {
 	return func(router chi.Router) {
-		router.Get("/swagger/", httpSwagger.WrapHandler)
+		router.Get("/swagger/*", httpSwagger.WrapHandler)
 	}
 }
