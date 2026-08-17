@@ -9,13 +9,12 @@ import (
 	"project/internal/presentation/schemas"
 )
 
-
-type AuthHander struct {
+type AuthHandler struct {
 	userService ports.UserService
 }
 
-func NewAuthHandler(userService ports.UserService) *AuthHander {
-	return &AuthHander{
+func NewAuthHandler(userService ports.UserService) *AuthHandler {
+	return &AuthHandler{
 		userService: userService,
 	}
 }
@@ -28,11 +27,11 @@ func NewAuthHandler(userService ports.UserService) *AuthHander {
 // @Success  201     {object} schemas.UserCreatedSchema
 // @Failure  400     {object} schemas.ErrorSchema
 // @Router   /auth/register [post]
-func (handler *AuthHander) CreateUser(w http.ResponseWriter, req *http.Request) {
+func (handler *AuthHandler) CreateUser(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	var request schemas.CreateUserSchema
 	if err := json.NewDecoder(req.Body).Decode(&request); err != nil {
-		errorResponse := schemas.ErrorSchema{Error: "Invalid request body"} 
+		errorResponse := schemas.ErrorSchema{Error: "Invalid request body"}
 		response.Error(w, http.StatusBadRequest, errorResponse)
 		return
 	}
@@ -57,11 +56,11 @@ func (handler *AuthHander) CreateUser(w http.ResponseWriter, req *http.Request) 
 // @Failure  400     {object} schemas.ErrorSchema
 // @Failure  401     {object} schemas.ErrorSchema
 // @Router   /auth/login [post]
-func (handler *AuthHander) Authorization(w http.ResponseWriter, req *http.Request) {
+func (handler *AuthHandler) Authorization(w http.ResponseWriter, req *http.Request) {
 	defer req.Body.Close()
 	var request schemas.AuthorizeSchema
 	if err := json.NewDecoder(req.Body).Decode(&request); err != nil {
-		errorResponse := schemas.ErrorSchema{Error: "Invalid request body"} 
+		errorResponse := schemas.ErrorSchema{Error: "Invalid request body"}
 		response.Error(w, http.StatusBadRequest, errorResponse)
 		return
 	}
@@ -76,5 +75,5 @@ func (handler *AuthHander) Authorization(w http.ResponseWriter, req *http.Reques
 	responseOptons := []response.ResponseOption{
 		response.WithRefreshTokenCookie(result.RefreshToken),
 	}
-	response.JSON(w, http.StatusCreated, mappers.FromTokensDTOToSchema(result), responseOptons...)
+	response.JSON(w, http.StatusOK, mappers.FromTokensDTOToSchema(result), responseOptons...)
 }

@@ -1,6 +1,5 @@
 package user
 
-
 type User struct {
 	id           int
 	userName     UserName
@@ -8,15 +7,24 @@ type User struct {
 	userPassword UserPassword
 }
 
-func New(inputUserName, inputUserEmail, inputUserPassword string) (*User, error) {
+type HasherInterface interface {
+	Hash(password string) (string, error)
+	Verify(password, hash string) bool
+}
+
+func New(inputUserName, inputUserEmail, inputUserPassword string, hasher HasherInterface) (*User, error) {
 	userName, err := CreateUserName(inputUserName)
 	if err != nil {
 		return nil, err
 	}
 
-	userPass, err := CreatePassword(inputUserPassword)
+	_, err = CreatePassword(inputUserPassword)
 	if err != nil {
 		return nil, err
+	}
+	hashedPass, err := hasher.Hash(inputUserPassword)
+	if err != nil {
+		return nil, InvalidPassword
 	}
 
 	userEmail, err := CreateUserEmail(inputUserEmail)
@@ -26,7 +34,7 @@ func New(inputUserName, inputUserEmail, inputUserPassword string) (*User, error)
 
 	return &User{
 		userName:     userName,
-		userPassword: userPass,
+		userPassword: UserPassword{value: hashedPass},
 		userEmail:    userEmail,
 	}, nil
 }
@@ -47,6 +55,6 @@ func (u *User) ID() int {
 	return u.id
 }
 
-func (u *User) SetHashedPassword(pass string) {
-	u.userPassword = UserPassword{pass}
+func (u *User) VerifyPassword(raw string, hasher HasherInterface) bool {
+	return hasher.Verify(raw, u.userPassword.value)
 }

@@ -5,15 +5,14 @@ import (
 	"fmt"
 )
 
-
 var (
-	NotFoundError = errors.New("User was not found")
+	NotFoundError     = errors.New("User was not found")
 	AlreadyExistError = errors.New("User already exist")
-	InvalidPassword = errors.New("Invalid password")
+	InvalidPassword   = errors.New("Invalid password")
 )
 
 type ValidationError struct {
-	Field string
+	Field  string
 	Reason string
 }
 

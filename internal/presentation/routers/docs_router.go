@@ -6,7 +6,6 @@ import (
 	_ "project/docs"
 )
 
-
 func WithSwagger() Option {
 	return func(router chi.Router) {
 		router.Get("/swagger/*", httpSwagger.WrapHandler)

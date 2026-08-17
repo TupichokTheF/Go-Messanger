@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	"project/internal/domain/user"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -24,7 +25,7 @@ func (userRepo *UserRepository) GetUserByUsername(ctx context.Context, username 
 		username).Scan(&u.ID, &u.UserName, &u.UserEmail, &u.UserPassword)
 
 	if err != nil {
-		return nil, user.NotFoundError
+		return nil, fmt.Errorf("Get user %q: %w", username, user.NotFoundError)
 	}
 
 	return user.Reconstitute(u), nil
@@ -39,7 +40,7 @@ func (userRepo *UserRepository) AddUser(ctx context.Context, inputUser *user.Use
 		RETURNING user_id`,
 		userState.UserName, userState.UserEmail, userState.UserPassword).Scan(&id)
 	if err != nil {
-		return 0, user.AlreadyExistError
+		return 0, fmt.Errorf("add user: %w", user.AlreadyExistError)
 	}
 
 	return id, nil

@@ -1,10 +1,9 @@
 package dtos
 
-
 type UserCreateDTO struct {
-	UserName string
+	UserName     string
 	UserPassword string
-	UserEmail string
+	UserEmail    string
 }
 
 type UserCreatedDTO struct {
@@ -17,6 +16,6 @@ type AuthorizeDTO struct {
 }
 
 type TokensDTO struct {
-	AccessToken string
+	AccessToken  string
 	RefreshToken string
 }

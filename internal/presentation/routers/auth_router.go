@@ -6,8 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-
-func WithAuthRouter(handler *handlers.AuthHander) Option {
+func WithAuthRouter(handler *handlers.AuthHandler) Option {
 	return func(router chi.Router) {
 		router.Route("/auth", func(r chi.Router) {
 			r.Post("/register", handler.CreateUser)

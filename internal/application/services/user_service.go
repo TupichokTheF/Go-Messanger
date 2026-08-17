@@ -7,11 +7,10 @@ import (
 	"project/internal/domain/user"
 )
 
-
 type UserService struct {
-	userRepo user.Repository
+	userRepo   user.Repository
 	jwtManager JWTManagerInterface
-	hasher HasherInterface
+	hasher     HasherInterface
 }
 
 type JWTManagerInterface interface {
@@ -27,23 +26,17 @@ type HasherInterface interface {
 
 func NewUserService(userRepo user.Repository, jwtManager JWTManagerInterface, hasher HasherInterface) *UserService {
 	return &UserService{
-		userRepo: userRepo,
+		userRepo:   userRepo,
 		jwtManager: jwtManager,
-		hasher: hasher,
+		hasher:     hasher,
 	}
 }
 
 func (userService *UserService) CreateNewUser(ctx context.Context, userCreateDTO *dtos.UserCreateDTO) (*dtos.UserCreatedDTO, error) {
-	createdUser, err := user.New(userCreateDTO.UserName, userCreateDTO.UserEmail, userCreateDTO.UserPassword)
+	createdUser, err := user.New(userCreateDTO.UserName, userCreateDTO.UserEmail, userCreateDTO.UserPassword, userService.hasher)
 	if err != nil {
 		return nil, fmt.Errorf("Create user: %w", err)
 	}
-
-	hashedPass, err := userService.hasher.Hash(createdUser.Password().String())
-	if err != nil {
-		return nil, fmt.Errorf("Create user: %w", user.InvalidPassword)
-	}
-	createdUser.SetHashedPassword(hashedPass)
 
 	userID, err := userService.userRepo.AddUser(ctx, createdUser)
 	if err != nil {
@@ -61,7 +54,7 @@ func (userService *UserService) AuthorizeUser(ctx context.Context, authorizeDTO 
 		return nil, fmt.Errorf("User authorization: %w", err)
 	}
 
-	if ok := userService.hasher.Verify(authorizeDTO.Password, u.Password().String()); !ok {
+	if ok := u.VerifyPassword(authorizeDTO.Password, userService.hasher); !ok {
 		return nil, fmt.Errorf("User Authorization: %w", user.InvalidPassword)
 	}
 
@@ -76,7 +69,7 @@ func (userService *UserService) AuthorizeUser(ctx context.Context, authorizeDTO 
 	}
 
 	return &dtos.TokensDTO{
-		AccessToken: accessToken,
+		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 }

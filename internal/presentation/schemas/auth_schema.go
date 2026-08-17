@@ -6,7 +6,7 @@ type UserCreatedSchema struct {
 
 type CreateUserSchema struct {
 	Username string `json:"username" example:"maximEZ"`
-	Email string `json:"email" example:"maxim@mail.ru"` 
+	Email    string `json:"email" example:"maxim@mail.ru"`
 	Password string `json:"password" example:"1Q2w3e"`
 }
 

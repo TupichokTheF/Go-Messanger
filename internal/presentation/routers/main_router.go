@@ -6,7 +6,6 @@ import (
 
 type Option func(router chi.Router)
 
-
 func GetRouter(options ...Option) *chi.Mux {
 	router := chi.NewRouter()
 

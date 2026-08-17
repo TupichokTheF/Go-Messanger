@@ -1,23 +1,23 @@
 package security
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-
 type JWTManager struct {
-	secretKey []byte
-	accessTtl time.Duration
+	secretKey  []byte
+	accessTtl  time.Duration
 	refreshTtl time.Duration
 }
 
 func NewJWTManager(secret []byte, accessTtl, refreshTtl time.Duration) *JWTManager {
 	return &JWTManager{
-		secretKey: secret,
-		accessTtl: accessTtl,
+		secretKey:  secret,
+		accessTtl:  accessTtl,
 		refreshTtl: refreshTtl,
 	}
 }
@@ -33,8 +33,8 @@ func (manager *JWTManager) NewRefreshToken(userID int) (string, error) {
 func (manager *JWTManager) newToken(userID int, ttl time.Duration) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"iat": time.Now().Unix(),
-		"exp": time.Now().Add(ttl).Unix(),
+		"iat":     time.Now().Unix(),
+		"exp":     time.Now().Add(ttl).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -42,20 +42,22 @@ func (manager *JWTManager) newToken(userID int, ttl time.Duration) (string, erro
 	return token.SignedString(manager.secretKey)
 }
 
-func (manager *JWTManager) ParseToken(inputToken string) (int, error) {
-	token, err := jwt.Parse(inputToken, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method")
-		}
-
-		return manager.secretKey, nil
-	})
-
+func (m *JWTManager) ParseToken(inputToken string) (int, error) {
+	token, err := jwt.Parse(inputToken, func(t *jwt.Token) (any, error) {
+		return m.secretKey, nil
+	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("parse token: %w", err)
 	}
 
-	payload := token.Claims.(jwt.MapClaims)
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return 0, errors.New("invalid token")
+	}
 
-	return payload["sub"].(int), nil
+	raw, ok := claims["user_id"].(float64)
+	if !ok {
+		return 0, errors.New("invalid user_id claim")
+	}
+	return int(raw), nil
 }

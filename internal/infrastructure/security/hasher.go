@@ -1,8 +1,6 @@
 package security
 
-
 import "golang.org/x/crypto/bcrypt"
-
 
 type BcryptHasher struct {
 	cost int

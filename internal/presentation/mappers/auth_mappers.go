@@ -5,12 +5,11 @@ import (
 	"project/internal/presentation/schemas"
 )
 
-
 func FromCreatedSchemaToDTO(schema *schemas.CreateUserSchema) *dtos.UserCreateDTO {
 	return &dtos.UserCreateDTO{
-		UserName: schema.Username,
+		UserName:     schema.Username,
 		UserPassword: schema.Password,
-		UserEmail: schema.Email,
+		UserEmail:    schema.Email,
 	}
 }
 

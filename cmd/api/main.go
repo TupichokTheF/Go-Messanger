@@ -30,7 +30,7 @@ func start() {
 	defer db.CloseConnection()
 
 	userRepo := repositories.NewUserRepository(db.ConnPool)
-	jwtManager := security.NewJWTManager(cfg.SecretKet, cfg.AccessTTL, cfg.RefreshTTL)
+	jwtManager := security.NewJWTManager(cfg.SecretKey, cfg.AccessTTL, cfg.RefreshTTL)
 	hasher := security.NewBcryptHasher()
 
 	userService := services.NewUserService(userRepo, jwtManager, hasher)

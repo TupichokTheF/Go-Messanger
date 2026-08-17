@@ -46,8 +46,8 @@ type LocalConfig struct {
 }
 
 type JWTConfig struct {
-	SecretKet []byte `env:"JWT_SECRET_KEY" env-required:"true"`
-	AccessTTL time.Duration `env:"ACCESS_TOKEN_TTL" env-required:"true"`
+	SecretKey  []byte        `env:"JWT_SECRET_KEY" env-required:"true"`
+	AccessTTL  time.Duration `env:"ACCESS_TOKEN_TTL" env-required:"true"`
 	RefreshTTL time.Duration `env:"REFRESH_TOKEN_TTL" env-required:"true"`
 }
 

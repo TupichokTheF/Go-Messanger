@@ -6,8 +6,7 @@ import (
 	"unicode"
 )
 
-
-type UserName struct {value string}
+type UserName struct{ value string }
 
 func CreateUserName(value string) (UserName, error) {
 	if len(value) < 4 {
@@ -18,14 +17,14 @@ func CreateUserName(value string) (UserName, error) {
 		return UserName{}, &ValidationError{Field: "username", Reason: "Empty username"}
 	}
 
-	return UserName{value: value,}, nil
+	return UserName{value: value}, nil
 }
 
 func (name UserName) String() string {
 	return name.value
 }
 
-type UserPassword struct {value string}
+type UserPassword struct{ value string }
 
 func CreatePassword(value string) (UserPassword, error) {
 	if len(value) < 6 {
@@ -49,14 +48,14 @@ func CreatePassword(value string) (UserPassword, error) {
 		return UserPassword{}, &ValidationError{Field: "password", Reason: "Password required digit"}
 	}
 
-	return UserPassword{value: value,}, nil
+	return UserPassword{value: value}, nil
 }
 
 func (pass UserPassword) String() string {
 	return pass.value
 }
 
-type UserEmail struct {value string}
+type UserEmail struct{ value string }
 
 func CreateUserEmail(value string) (UserEmail, error) {
 	if len(value) > 200 {
@@ -68,7 +67,7 @@ func CreateUserEmail(value string) (UserEmail, error) {
 		return UserEmail{}, &ValidationError{Field: "email", Reason: "Incorrect email address"}
 	}
 
-	return UserEmail{value: value,}, nil
+	return UserEmail{value: value}, nil
 }
 
 func (email UserEmail) String() string {
