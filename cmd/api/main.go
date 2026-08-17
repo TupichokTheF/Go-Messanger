@@ -7,6 +7,7 @@ import (
 	"project/internal/core"
 	"project/internal/infrastructure/database/postgres"
 	"project/internal/infrastructure/repositories"
+	"project/internal/infrastructure/security"
 	"project/internal/presentation/handlers"
 	"project/internal/presentation/routers"
 )
@@ -29,8 +30,10 @@ func start() {
 	defer db.CloseConnection()
 
 	userRepo := repositories.NewUserRepository(db.ConnPool)
+	jwtManager := security.NewJWTManager(cfg.SecretKet, cfg.AccessTTL, cfg.RefreshTTL)
+	hasher := security.NewBcryptHasher()
 
-	userService := services.NewUserService(userRepo)
+	userService := services.NewUserService(userRepo, jwtManager, hasher)
 
 	authHandler := handlers.NewAuthHandler(userService)
 

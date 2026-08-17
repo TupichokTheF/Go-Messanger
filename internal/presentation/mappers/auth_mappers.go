@@ -19,3 +19,16 @@ func FromCreatedDTOToSchema(dto *dtos.UserCreatedDTO) *schemas.UserCreatedSchema
 		UserID: dto.UserId,
 	}
 }
+
+func FromAuthorizeSchemaToDTO(schema *schemas.AuthorizeSchema) *dtos.AuthorizeDTO {
+	return &dtos.AuthorizeDTO{
+		Username: schema.Username,
+		Password: schema.Password,
+	}
+}
+
+func FromTokensDTOToSchema(dto *dtos.TokensDTO) *schemas.TokensSchema {
+	return &schemas.TokensSchema{
+		AccessToken: dto.AccessToken,
+	}
+}

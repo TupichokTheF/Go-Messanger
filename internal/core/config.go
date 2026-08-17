@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
@@ -13,6 +14,7 @@ type Config struct {
 	HTTPConfig
 	DataBaseConfig
 	LocalConfig
+	JWTConfig
 }
 
 type HTTPConfig struct {
@@ -40,7 +42,13 @@ func (d *DataBaseConfig) GetURL() string {
 }
 
 type LocalConfig struct {
-	Swagger bool `env:"SWAGGER" env-required:"true"`
+	Swagger bool `env:"SWAGGER" env-required:"false"`
+}
+
+type JWTConfig struct {
+	SecretKet []byte `env:"JWT_SECRET_KEY" env-required:"true"`
+	AccessTTL time.Duration `env:"ACCESS_TOKEN_TTL" env-required:"true"`
+	RefreshTTL time.Duration `env:"REFRESH_TOKEN_TTL" env-required:"true"`
 }
 
 func LoadConfig() *Config {

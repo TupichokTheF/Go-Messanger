@@ -12,8 +12,11 @@ import (
 // - w, куда записывается ответ
 // - status, HTTP статус, с которым возвращается ответ
 // - payload, тело ответа, приходит ввиде любого тип данных
-func JSON(w http.ResponseWriter, status int, payload any) {
+func JSON(w http.ResponseWriter, status int, payload any, options ...ResponseOption) {
 	w.Header().Set("Content-Type", "application/json")
+	for _, opt := range options {
+		opt(w)
+	}
 	w.WriteHeader(status)
 
 	buf, _ := json.Marshal(payload)

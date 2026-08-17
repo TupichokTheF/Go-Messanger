@@ -9,6 +9,7 @@ import (
 var (
 	NotFoundError = errors.New("User was not found")
 	AlreadyExistError = errors.New("User already exist")
+	InvalidPassword = errors.New("Invalid password")
 )
 
 type ValidationError struct {

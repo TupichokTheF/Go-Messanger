@@ -8,7 +8,7 @@ type UserState struct {
 	UserPassword string
 }
 
-func Reconstitute(state UserState) (*User) {
+func Reconstitute(state *UserState) (*User) {
 	return &User{
 		id: state.ID,
 		userName: UserName{state.UserName},

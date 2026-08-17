@@ -15,6 +15,51 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Авторизация пользователя",
+                "parameters": [
+                    {
+                        "description": "Учётные данные",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/project_internal_presentation_schemas.AuthorizeSchema"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/project_internal_presentation_schemas.TokensSchema"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/project_internal_presentation_schemas.ErrorSchema"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/project_internal_presentation_schemas.ErrorSchema"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/register": {
             "post": {
                 "consumes": [
@@ -56,17 +101,33 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "project_internal_presentation_schemas.AuthorizeSchema": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "1Q2w3e"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "maximEZ"
+                }
+            }
+        },
         "project_internal_presentation_schemas.CreateUserSchema": {
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "maxim@mail.ru"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "1Q2w3e"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "maximEZ"
                 }
             }
         },
@@ -74,6 +135,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "project_internal_presentation_schemas.TokensSchema": {
+            "type": "object",
+            "properties": {
+                "access_token": {
                     "type": "string"
                 }
             }

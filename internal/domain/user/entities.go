@@ -46,3 +46,7 @@ func (u *User) Password() UserPassword {
 func (u *User) ID() int {
 	return u.id
 }
+
+func (u *User) SetHashedPassword(pass string) {
+	u.userPassword = UserPassword{pass}
+}

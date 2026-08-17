@@ -1,17 +1,34 @@
 basePath: /api/v1
 definitions:
+  project_internal_presentation_schemas.AuthorizeSchema:
+    properties:
+      password:
+        example: 1Q2w3e
+        type: string
+      username:
+        example: maximEZ
+        type: string
+    type: object
   project_internal_presentation_schemas.CreateUserSchema:
     properties:
       email:
+        example: maxim@mail.ru
         type: string
       password:
+        example: 1Q2w3e
         type: string
       username:
+        example: maximEZ
         type: string
     type: object
   project_internal_presentation_schemas.ErrorSchema:
     properties:
       error:
+        type: string
+    type: object
+  project_internal_presentation_schemas.TokensSchema:
+    properties:
+      access_token:
         type: string
     type: object
   project_internal_presentation_schemas.UserCreatedSchema:
@@ -26,6 +43,35 @@ info:
   title: Go Messenger API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Учётные данные
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/project_internal_presentation_schemas.AuthorizeSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project_internal_presentation_schemas.TokensSchema'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project_internal_presentation_schemas.ErrorSchema'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/project_internal_presentation_schemas.ErrorSchema'
+      summary: Авторизация пользователя
+      tags:
+      - auth
   /auth/register:
     post:
       consumes:

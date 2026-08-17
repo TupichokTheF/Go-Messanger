@@ -17,23 +17,23 @@ func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
 	}
 }
 
-func (userRepo *UserRepository) GetUserById(userId int) (*user.User, error) {
+func (userRepo *UserRepository) GetUserByUsername(ctx context.Context, username string) (*user.User, error) {
 	var u *user.UserState = new(user.UserState)
-	err := userRepo.Pool.QueryRow(context.TODO(),
-		"SELECT * FROM users WHERE user_id = $1",
-		userId).Scan(&u.ID, &u.UserName, &u.UserEmail, &u.UserPassword)
+	err := userRepo.Pool.QueryRow(ctx,
+		"SELECT * FROM users WHERE username = $1",
+		username).Scan(&u.ID, &u.UserName, &u.UserEmail, &u.UserPassword)
 
 	if err != nil {
 		return nil, user.NotFoundError
 	}
 
-	return user.Reconstitute(*u), nil
+	return user.Reconstitute(u), nil
 }
 
-func (userRepo *UserRepository) AddUser(inputUser *user.User) (int, error) {
+func (userRepo *UserRepository) AddUser(ctx context.Context, inputUser *user.User) (int, error) {
 	var id int
 	userState := inputUser.State()
-	err := userRepo.Pool.QueryRow(context.TODO(),
+	err := userRepo.Pool.QueryRow(ctx,
 		`INSERT INTO users (username, email, password) 
 		VALUES ($1, $2, $3)
 		RETURNING user_id`,
