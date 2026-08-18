@@ -73,3 +73,16 @@ func (userService *UserService) AuthorizeUser(ctx context.Context, authorizeDTO 
 		RefreshToken: refreshToken,
 	}, nil
 }
+
+func (userService *UserService) GetUserInfo(ctx context.Context, userID int) (*dtos.UserInfoDTO, error) {
+	u, err := userService.userRepo.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+
+	return &dtos.UserInfoDTO{
+		UserID:    u.ID(),
+		Username:  u.Username().String(),
+		UserEmail: u.Email().String(),
+	}, nil
+}

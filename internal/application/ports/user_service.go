@@ -8,4 +8,5 @@ import (
 type UserService interface {
 	CreateNewUser(ctx context.Context, userCreateDTO *dtos.UserCreateDTO) (*dtos.UserCreatedDTO, error)
 	AuthorizeUser(ctx context.Context, authorizeDTO *dtos.AuthorizeDTO) (*dtos.TokensDTO, error)
+	GetUserInfo(ctx context.Context, userID int) (*dtos.UserInfoDTO, error)
 }

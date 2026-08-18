@@ -10,24 +10,24 @@ import (
 
 type JWTManager struct {
 	secretKey  []byte
-	accessTtl  time.Duration
-	refreshTtl time.Duration
+	accessTTL  time.Duration
+	refreshTTL time.Duration
 }
 
-func NewJWTManager(secret []byte, accessTtl, refreshTtl time.Duration) *JWTManager {
+func NewJWTManager(secret []byte, accessTTL, refreshTTL time.Duration) *JWTManager {
 	return &JWTManager{
 		secretKey:  secret,
-		accessTtl:  accessTtl,
-		refreshTtl: refreshTtl,
+		accessTTL:  accessTTL,
+		refreshTTL: refreshTTL,
 	}
 }
 
 func (manager *JWTManager) NewAccessToken(userID int) (string, error) {
-	return manager.newToken(userID, manager.accessTtl)
+	return manager.newToken(userID, manager.accessTTL)
 }
 
 func (manager *JWTManager) NewRefreshToken(userID int) (string, error) {
-	return manager.newToken(userID, manager.refreshTtl)
+	return manager.newToken(userID, manager.refreshTTL)
 }
 
 func (manager *JWTManager) newToken(userID int, ttl time.Duration) (string, error) {

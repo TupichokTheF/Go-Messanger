@@ -16,6 +16,8 @@ func FromApplicationToApiError(appError error) (int, string) {
 		return http.StatusConflict, "User already exists"
 	case errors.Is(appError, user.NotFoundError):
 		return http.StatusBadRequest, "User wasn't found"
+	case errors.Is(appError, user.InvalidPassword):
+		return http.StatusUnauthorized, "Invalid password"
 	default:
 		return http.StatusInternalServerError, "Internal server error"
 	}

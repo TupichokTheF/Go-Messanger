@@ -19,3 +19,9 @@ type TokensDTO struct {
 	AccessToken  string
 	RefreshToken string
 }
+
+type UserInfoDTO struct {
+	UserID    int
+	Username  string
+	UserEmail string
+}

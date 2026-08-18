@@ -31,6 +31,19 @@ func (userRepo *UserRepository) GetUserByUsername(ctx context.Context, username 
 	return user.Reconstitute(u), nil
 }
 
+func (userRepo *UserRepository) GetUserByID(ctx context.Context, userID int) (*user.User, error) {
+	var u *user.UserState = new(user.UserState)
+	err := userRepo.Pool.QueryRow(ctx,
+		"SELECT * FROM users WHERE username = $1",
+		userID).Scan(&u.ID, &u.UserName, &u.UserEmail, &u.UserPassword)
+
+	if err != nil {
+		return nil, fmt.Errorf("Get user %v: %w", userID, user.NotFoundError)
+	}
+
+	return user.Reconstitute(u), nil
+}
+
 func (userRepo *UserRepository) AddUser(ctx context.Context, inputUser *user.User) (int, error) {
 	var id int
 	userState := inputUser.State()

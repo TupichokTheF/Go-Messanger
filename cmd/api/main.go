@@ -36,9 +36,11 @@ func start() {
 	userService := services.NewUserService(userRepo, jwtManager, hasher)
 
 	authHandler := handlers.NewAuthHandler(userService)
+	userHandler := handlers.NewUserHandlers(userService)
 
 	routersOptions := []routers.Option{
 		routers.WithAuthRouter(authHandler),
+		routers.WithUserRouter(userHandler, jwtManager),
 	}
 
 	if cfg.Swagger {
